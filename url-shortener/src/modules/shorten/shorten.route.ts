@@ -10,5 +10,6 @@ const shortensController = new ShortensController(shortensService);
 
 router.post("/", shortensController.create);
 router.get("/:shortCode", shortensController.get);
+router.get("/", shortensController.getAll);
 
 export default router;

@@ -7,25 +7,23 @@ export class ShortensService {
   constructor(private db: NodePgDatabase) {}
 
   async create(originalUrl: string, title?: string) {
-    const [row] = await this.db.insert(urlsTable).values({
-      originalUrl,
-      shortCode: "pending",
-      title,
-    }).returning({
-      id: urlsTable.id,
-      title: urlsTable.title
-    })
+      for(let attempt = 0; attempt < 3; attempt++) {
+        const shortCode = generateShortCode();
+        try {
+          const [url] = await this.db.insert(urlsTable).values({
+            shortCode,
+            originalUrl,
+            title
+          }).returning()
 
-    const shortCode = generateShortCode();
-
-    await this.db.update(urlsTable).set({
-      shortCode
-    }).where(eq(urlsTable.id, row.id))
-
-    return {
-      shortCode,
-      originalUrl,
-      title: row.title,
+          return {
+            shortCode,
+            originalUrl,
+            title: url.title,
+          }
+        } catch (error) {
+          if (attempt === 2) throw error
+        }
     }
   }
 
@@ -38,5 +36,16 @@ export class ShortensService {
       shortCode: row.shortCode,
       createdAt: row.createdAt,
     }
+  }
+
+  async getAll() {
+    const rows = await this.db.select().from(urlsTable)
+    return rows.map((row) => ({
+      id: row.id.toString(),
+      originalUrl: row.originalUrl,
+      title: row.title,
+      shortCode: row.shortCode,
+      createdAt: row.createdAt,
+    }))
   }
 }

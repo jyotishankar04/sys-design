@@ -32,4 +32,10 @@ export class ShortensController {
 
     return res.status(200).json(ApiResponse.success("Shorten retrieved successfully", data));
   };
+
+  getAll = async (req: Request, res: Response) => {
+    const data = await this.shortensService.getAll();
+
+    return res.status(200).json(ApiResponse.success("Shortens retrieved successfully", data));
+  };
 }
