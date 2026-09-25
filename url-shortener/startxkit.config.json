@@ -1,0 +1,18 @@
+{
+  "tool": "startxkit",
+  "version": "1.0.1",
+  "framework": "express",
+  "language": "typescript",
+  "architecture": "modular",
+  "packageManager": "pnpm",
+  "srcDir": "src",
+  "moduleDir": "src/modules",
+  "apiPrefix": "/api/v1",
+  "validation": "zod",
+  "database": null,
+  "orm": null,
+  "auth": false,
+  "fileNaming": "kebab-case",
+  "logger": "pino",
+  "dependencyInjection": true
+}
